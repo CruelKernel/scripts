@@ -7,6 +7,7 @@ unzip "$1" Kernel.tar.gz
 tar xf Kernel.tar.gz
 rm Kernel.tar.gz
 
+chmod -x arch/arm64/configs/*
 find . -type f \( -name '*.dts' -o -name '*.dtsi' -o -name '*.[ch]' -o -name '*.ihex' -o -name Kbuild -o -name Kconfig -o -name Makefile \) -executable -print0 | xargs -0 -n5000 -P$(nproc) chmod -x
 
 #git checkout `git status | grep deleted | cut -d ':' -f 2 | cut -d ' ' -f 5`
