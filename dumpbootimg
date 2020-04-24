@@ -269,8 +269,8 @@ if __name__ == '__main__':
                 print("extra_cmdline={}".format(img.extra_cmdline))
             print("base={:#x}".format(img.base))
             print("kernel_offset={:#010x}".format(img.kernel_offset))
-            print("ramdisk_offset={}".format(img.ramdisk_offset))
-            print("second_offset={}".format(img.second_offset))
+            print("ramdisk_offset={:#010x}".format(img.ramdisk_offset))
+            print("second_offset={:#010x}".format(img.second_offset))
             print("tags_offset={:#010x}".format(img.tags_offset))
     except IOError:
         sys.stderr.write("Can't open file {}\n".format(sys.argv[1]))
