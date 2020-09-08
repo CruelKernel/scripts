@@ -14,6 +14,7 @@ do
                 name="CRUEL-$V"  \
                 +magisk          \
                 +nohardening     \
+                +noatime         \
                 +ttl             \
                 +wireguard       \
                 +cifs            \
@@ -21,5 +22,5 @@ do
                 +ntfs            \
                 +morosound       \
                 +boeffla_wl_blocker
-	mv boot.img CruelKernel-$model-$V.img
+	mv boot-$model.img CruelKernel-$model-$V.img
 done
