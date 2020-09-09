@@ -14,11 +14,9 @@ do
                 name="CRUEL-$V"  \
                 +magisk          \
                 +nohardening     \
-                +noatime         \
                 +ttl             \
                 +wireguard       \
                 +cifs            \
-                +sdfat           \
                 +ntfs            \
                 +morosound       \
                 +boeffla_wl_blocker
