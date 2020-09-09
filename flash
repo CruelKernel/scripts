@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+
+import os
+from sys import argv, stderr
+from subprocess import CalledProcessError, run, DEVNULL, PIPE
+
+def tool_exists(name):
+    """Check whether `name` is on PATH and marked as executable."""
+
+    from shutil import which
+    return which(name) is not None
+
+def fatal(*args, **kwargs):
+    print(*args, file=stderr, **kwargs)
+    exit(1)
+
+def adb_wait_for_device():
+    print('Waiting for the device...')
+    run(['adb', 'wait-for-device'])
+
+def heimdall_wait_for_device():
+    print('Waiting for download mode...')
+    run('until heimdall detect > /dev/null 2>&1; do sleep 1; done', shell=True)
+
+def heimdall_in_download_mode():
+    return run(['heimdall', 'detect'], stdout=DEVNULL, stderr=DEVNULL).returncode == 0
+
+def heimdall_flash_boot(boot):
+    run(['heimdall', 'flash', '--BOOT', boot], check=True)
+
+def adb_reboot_download():
+    run(['adb', 'reboot', 'download'])
+
+def adb_reboot():
+    run(['adb', 'reboot'])
+
+def adb_get_kernel_version():
+    run(['adb', 'shell', 'cat', '/proc/version'])
+
+def adb_uid():
+    return int(run(['adb', 'shell', 'id', '-u'], stdout=PIPE, check=True).stdout.decode('utf-8'))
+
+def adb_check_su():
+    try:
+        run(['adb', 'shell', 'command', '-v', 'su'], check=True)
+        return True
+    except CalledProcessError:
+        return False
+
+def flash(boot):
+    if tool_exists('adb'):
+        is_root = False
+        try:
+            if not heimdall_in_download_mode():
+                adb_wait_for_device()
+                is_root = (adb_uid() == 0) or adb_check_su()
+        except (FileNotFoundError, CalledProcessError):
+            pass
+
+        if is_root:
+            run(['adb', 'push',
+                boot, '/data/local/tmp'],
+                check=True)
+            run(['adb', 'shell',
+                "su -c 'dd if=/data/local/tmp/" + boot +
+                         " of=/dev/block/by-name/boot'"],
+                check=True)
+            run(['adb', 'shell', 'rm', '-f', '/data/local/tmp/' + boot])
+            adb_reboot()
+            adb_wait_for_device()
+            adb_get_kernel_version()
+        elif tool_exists('heimdall'):
+            if not heimdall_in_download_mode():
+                adb_wait_for_device()
+                adb_reboot_download()
+            heimdall_wait_for_device()
+            heimdall_flash_boot(boot)
+            adb_wait_for_device()
+            adb_get_kernel_version()
+        else:
+            fatal("Please, use 'adb root' or install 'heimdall'")
+    else:
+        fatal("Please, install 'adb'")
+
+if __name__ == '__main__':
+    boot_img = argv[1] if len(argv) > 1 else 'boot.img'
+
+    if not os.path.isfile(boot_img):
+        fatal("Usage: {} ./boot.img".format(argv[0]))
+
+    flash(boot_img)
