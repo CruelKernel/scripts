@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+
+import sys
+from pkg_resources import parse_version
+from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
+
+
+if parse_version(ks_version) < parse_version('0.7'):
+    raise Exception("Incompatible Kaitai Struct Python API: 0.7 or later is required, but you have %s" % (ks_version))
+
+class Dto(KaitaiStruct):
+    def __init__(self, _io, _parent=None, _root=None):
+        self._io = _io
+        self._parent = _parent
+        self._root = _root if _root else self
+        self._read()
+
+    def _read(self):
+        self.header = self._root.Header(self._io, self, self._root)
+        self.entries = [None] * (self.header.dt_entry_count)
+        for i in range(self.header.dt_entry_count):
+            self.entries[i] = self._root.Entry(self._io, self, self._root)
+
+
+    class Header(KaitaiStruct):
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self._read()
+
+        def _read(self):
+            self.magic = self._io.ensure_fixed_contents(b"\xD7\xB7\xAB\x1E")
+            self.total_size = self._io.read_u4be()
+            self.header_size = self._io.read_u4be()
+            self.dt_entry_size = self._io.read_u4be()
+            self.dt_entry_count = self._io.read_u4be()
+            self.dt_entries_offset = self._io.read_u4be()
+            self.page_size = self._io.read_u4be()
+            self.version = self._io.read_u4be()
+
+
+    class Entry(KaitaiStruct):
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self._read()
+
+        def _read(self):
+            self.size = self._io.read_u4be()
+            self.offset = self._io.read_u4be()
+            self.id = self._io.read_u4be()
+            self.rev = self._io.read_u4be()
+            self.custom = [None] * (4)
+            for i in range(4):
+                self.custom[i] = self._io.read_u4be()
+
+
+        @property
+        def body(self):
+            if hasattr(self, '_m_body'):
+                return self._m_body if hasattr(self, '_m_body') else None
+
+            io = self._root._io
+            _pos = io.pos()
+            io.seek(self.offset)
+            self._m_body = io.read_bytes(self.size)
+            io.seek(_pos)
+            return self._m_body if hasattr(self, '_m_body') else None
+
+if __name__ == '__main__':
+    if (len(sys.argv) < 2):
+        sys.stderr.write("Usage: {} <dto.img|dtbo.img>\n".format(sys.argv[0]))
+        sys.exit(1)
+    try:
+        with open(sys.argv[1], 'rb') as fh:
+            img = Dto(KaitaiStream(BytesIO(fh.read())))
+
+            print("total_size={}".format(img.header.total_size))
+            print("header_size={}".format(img.header.header_size))
+            print("dt_entry_size={}".format(img.header.dt_entry_size))
+            print("dt_entry_count={}".format(img.header.dt_entry_count))
+            print("dt_entries_offset={}".format(img.header.dt_entries_offset))
+            print("page_size={}".format(img.header.page_size))
+            print("version={}".format(img.header.version))
+            print()
+            for i, e in enumerate(img.entries):
+                print("entry[{}].size={}".format(i, e.size))
+                print("entry[{}].offset={}".format(i, e.offset))
+                print("entry[{}].id={}".format(i, e.id))
+                print("entry[{}].rev={}".format(i, e.rev))
+                print("entry[{}].custom[0]={:#x}".format(i, e.custom[0]))
+                print("entry[{}].custom[1]={:#x}".format(i, e.custom[1]))
+                print("entry[{}].custom[2]={:#x}".format(i, e.custom[2]))
+                print("entry[{}].custom[3]={:#x}".format(i, e.custom[3]))
+                print()
+                with open("entry{}.dto".format(i), 'wb') as eh:
+                    eh.write(e.body)
+    except IOError:
+        sys.stderr.write("Can't open file {}\n".format(sys.argv[1]))
+
