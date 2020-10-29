@@ -15,19 +15,28 @@ export ANDROID_MAJOR_VERSION=q
 git clean -d -x -f
 make mrproper
 
-for i in build.mkbootimg.*
-do
-	model=$(echo $i | cut -d '.' -f 3)
-        ./build mkimg            \
-                model=$model     \
-                name="CRUEL-$V"  \
-                +magisk          \
-                +nohardening     \
-                +ttl             \
-                +wireguard       \
-                +cifs            \
-                +ntfs            \
-                +morosound       \
-                +boeffla_wl_blocker
-	mv boot-$model.img CruelKernel-$model-$V.img
-done
+./cruelbuild pack           \
+	model=all           \
+	name="CRUEL-$V"     \
+	toolchain=cruel     \
+	O=buildtree         \
+	+magisk             \
+	+nohardening        \
+	+ttl                \
+	+cifs               \
+	+ntfs               \
+	+sdfat              \
+	+wireguard          \
+	+noaudit            \
+	+noksm              \
+	+nomodules          \
+	+nozram             \
+	+fake_config        \
+	+usb_serial         \
+	+mass_storage       \
+	+simple_lmk         \
+	+sched_powersave    \
+	+sched_performance  \
+	+io_noop            \
+	+morosound          \
+	+boeffla_wl_blocker
