@@ -261,17 +261,38 @@ if __name__ == '__main__':
             print("os_version={}.{}.{}".format(os_version.major, os_version.minor, os_version.patch))
             print("os_patch_level={}-{:02d}".format(os_version.year, os_version.month))
 
-            print("board={:s}".format(img.name))
+            if img.name:
+                print("board={:s}".format(img.name))
             print("pagesize={}".format(img.page_size))
             if img.cmdline:
                 print("cmdline={}".format(img.cmdline))
             if img.extra_cmdline:
                 print("extra_cmdline={}".format(img.extra_cmdline))
-            print("base={:#x}".format(img.base))
+            print("base={:#010x}".format(img.base))
             print("kernel_offset={:#010x}".format(img.kernel_offset))
             print("ramdisk_offset={:#010x}".format(img.ramdisk_offset))
             print("second_offset={:#010x}".format(img.second_offset))
             print("tags_offset={:#010x}".format(img.tags_offset))
+            if img.dtb_offset:
+                print("dtb_offset={:#010x}".format(img.dtb_offset))
+            try:
+                if img.kernel_img:
+                    with open('kernel', 'wb') as fh:
+                        fh.write(img.kernel_img)
+                if img.ramdisk_img:
+                    with open('ramdisk', 'wb') as fh:
+                        fh.write(img.ramdisk_img)
+                if img.dtb_img:
+                    with open('dtb', 'wb') as fh:
+                        fh.write(img.dtb_img)
+                if img.recovery_dtbo_img:
+                    with open('recovery_dtbo', 'wb') as fh:
+                        fh.write(img.recovery_dtbo_img)
+                if img.second_img:
+                    with open('second_img', 'wb') as fh:
+                        fh.write(img.second_img)
+            except IOError as e:
+                sys.stderr.write("Can't open file: {}\n".format(str(e)))
     except IOError:
         sys.stderr.write("Can't open file {}\n".format(sys.argv[1]))
 
