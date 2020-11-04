@@ -6,7 +6,8 @@ CWD=$(pwd)
 
 model="$(echo "$1" | cut -d '-' -f 2)"
 
-rm -fr *
+git submodule foreach git checkout default
+rm -fr $(ls -A | grep -v toolchain | grep -v .git)
 unzip "$1" Kernel.tar.gz
 tar xf Kernel.tar.gz
 rm Kernel.tar.gz
