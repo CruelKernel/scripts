@@ -17,7 +17,7 @@ make mrproper
 
 ./cruelbuild pack           \
 	model=all           \
-	name="CRUEL-$V"     \
+	name="Cruel-$V"     \
 	toolchain=cruel     \
 	O=buildtree         \
 	+magisk             \
@@ -30,13 +30,10 @@ make mrproper
 	+noaudit            \
 	+noksm              \
 	+nomodules          \
-	+nozram             \
 	+fake_config        \
 	+usb_serial         \
 	+mass_storage       \
-	+simple_lmk         \
 	+sched_powersave    \
 	+sched_performance  \
-	+io_noop            \
 	+morosound          \
 	+boeffla_wl_blocker

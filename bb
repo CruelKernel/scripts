@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-NODEFAULTS=1 ./cruelbuild flash \
+NODEFAULTS=y FLASH=y ./cruelbuild mkimg \
 	model=G973F toolchain=cruel \
 	+samsung \
 	+magisk \
