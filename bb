@@ -6,10 +6,9 @@ NODEFAULTS=1 ./cruelbuild flash \
 	+magisk \
 	+nohardening \
 	+nodebug \
-	+noswap +nozram +noksm +nomodules \
+	+noswap +noksm +nomodules \
 	+noatime \
 	+noaudit \
 	+sdfat \
 	+boeffla_wl_blocker \
-	+io_noop \
 	+fake_config "$@"
