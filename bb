@@ -6,7 +6,8 @@ NODEFAULTS=y FLASH=y ./cruelbuild \
 	+magisk \
 	+nohardening \
 	+nodebug \
-	+noswap +noksm +nomodules \
+	+noswap +noksm +nomodules +nozram \
+	+force_dex_wqhd \
 	+noatime \
 	+noaudit \
 	+sdfat \
