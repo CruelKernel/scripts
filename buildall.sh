@@ -12,16 +12,21 @@ fi
 
 export ARCH=arm64
 export ANDROID_MAJOR_VERSION=q
+sudo umount build || true
 git clean -d -x -f
 make mrproper
 
+mkdir -p ../out
+for t in default samsung cruel proton arter97
+do
 ./cruelbuild pack           \
 	model=all           \
 	name="Cruel-$V"     \
-	toolchain=cruel     \
-	O=buildtree         \
+	toolchain=$t        \
+	O=build             \
 	+magisk             \
 	+nohardening        \
+	+force_dex_wqhd     \
 	+ttl                \
 	+cifs               \
 	+ntfs               \
@@ -32,8 +37,10 @@ make mrproper
 	+nomodules          \
 	+fake_config        \
 	+usb_serial         \
-	+mass_storage       \
 	+sched_powersave    \
 	+sched_performance  \
 	+morosound          \
 	+boeffla_wl_blocker
+
+mv CruelKernel.zip ../out/CruelKernel-$V-$t.zip
+done
