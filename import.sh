@@ -4,7 +4,7 @@ set -e
 
 CWD=$(pwd)
 
-model="$(echo "$1" | cut -d '-' -f 2)"
+model="$(echo "$1" | cut -d '-' -f 2 | cut -d '_' -f 1)"
 
 git submodule foreach git checkout default
 rm -fr $(ls -A | grep -v toolchain | grep -v .git)
