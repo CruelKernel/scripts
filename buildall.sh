@@ -17,7 +17,7 @@ git clean -d -x -f
 make mrproper
 
 mkdir -p ../out
-for t in default samsung cruel proton arter97
+for t in default samsung cruel proton
 do
 ./cruelbuild pack           \
 	model=all           \
