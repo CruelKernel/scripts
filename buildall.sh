@@ -11,7 +11,8 @@ if [[ "x$V" == "x" ]]; then
 fi
 
 export ARCH=arm64
-export ANDROID_MAJOR_VERSION=q
+export ANDROID_MAJOR_VERSION=r
+export PLATFORM_VERSION=11
 sudo umount build || true
 git clean -d -x -f
 make mrproper
@@ -40,7 +41,8 @@ do
 	+sched_powersave    \
 	+sched_performance  \
 	+morosound          \
-	+boeffla_wl_blocker
+	+boeffla_wl_blocker \
+	+dtb
 
 mv CruelKernel.zip ../out/CruelKernel-$V-$t.zip
 done
