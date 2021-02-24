@@ -46,3 +46,30 @@ do
 
 mv CruelKernel.zip ../out/CruelKernel-$V-$t.zip
 done
+
+./cruelbuild pack           \
+	model=all           \
+	name="Cruel-$V"     \
+	toolchain=cruel     \
+	O=build             \
+	+magisk             \
+	+nohardening        \
+	+force_dex_wqhd     \
+	+ttl                \
+	+cifs               \
+	+ntfs               \
+	+sdfat              \
+	+wireguard          \
+	+noaudit            \
+	+noksm              \
+	+nomodules          \
+	+fake_config        \
+	+usb_serial         \
+	+sched_powersave    \
+	+sched_performance  \
+	+morosound          \
+	+boeffla_wl_blocker \
+	+dtb                \
+	+50hz
+
+mv CruelKernel.zip ../out/CruelKernel-$V-50hz.zip
