@@ -14,11 +14,11 @@ rm Kernel.tar.gz
 
 
 chmod -x arch/arm64/configs/*
-chmod -x drivers/misc/tzdev/startup.tzar
-chmod -x firmware/tsp_sec/y761_beyond0_phole.bin
+chmod -x drivers/misc/tzdev/startup.tzar || true
+chmod -x firmware/tsp_sec/y761_beyond0_phole.bin || true
 chmod -x drivers/gator/mali_midgard.mk
-chmod -x drivers/net/wireless/broadcom/bcmdhd_100_10/Makefile.kk
-chmod -x drivers/net/wireless/broadcom/bcmdhd_100_10/Makefile.lp
+chmod -x drivers/net/wireless/broadcom/bcmdhd_100_10/Makefile.kk || true
+chmod -x drivers/net/wireless/broadcom/bcmdhd_100_10/Makefile.lp || true
 chmod -x drivers/net/ethernet/cadence/macb_ptp.c
 chmod -x drivers/gator/COPYING
 
@@ -41,8 +41,8 @@ $objdump --version
 find . -type f -name '*.bin' -exec $objdump -I binary -O ihex '{}' '{}'.ihex \;
 find . -type f -name '*.fw'  -exec $objdump -I binary -O ihex '{}' '{}'.ihex \;
 
-sed -i -e 's/\r/\n/g' drivers/video/fbdev/exynos/dpu20/mcd_hdr/mcd_cm_def.h
-sed -i -e 's/\r/\n/g' drivers/video/fbdev/exynos/dpu20/mcd_hdr/mcd_cm_lut.h
+sed -i -e 's/\r/\n/g' drivers/video/fbdev/exynos/dpu20/mcd_hdr/mcd_cm_def.h || true
+sed -i -e 's/\r/\n/g' drivers/video/fbdev/exynos/dpu20/mcd_hdr/mcd_cm_lut.h || true
 
 git checkout $(\git status | \grep deleted | cut -d ':' -f 1- | cut -d ' ' -f 5- | \grep arm64 | \grep boot | \grep dts | \grep -v samsung | \grep -v exynos)
 #git checkout $(\git status | \grep deleted | cut -d ':' -f 1- | cut -d ' ' -f 5- | \grep arm64 | \grep boot | \grep dts)
