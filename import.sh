@@ -28,7 +28,7 @@ find . -type f \( -name '*.dts' -o -name '*.dtsi' -o -name '*.[ch]' -o -name '*.
 
 find . -type f -print | fgrep -v './firmware' | fgrep -v './.git' | fgrep -v './toolchain' | xargs -n5000 -P$(nproc) dos2unix -q
 
-git checkout `git diff --no-color | fgrep --color=never -B 2 -e "new mode" | fgrep --color=never diff | cut -d '/' -f 2- | cut -d ' ' -f 1`
+git checkout `git diff --no-color --ignore-submodules=all | fgrep --color=never -B 2 -e "new mode" | fgrep --color=never diff | cut -d '/' -f 2- | cut -d ' ' -f 1`
 
 objdump="$CWD"/scripts/toolchain/gcc-cfp/gcc-cfp-jopp-only/aarch64-linux-android-4.9/bin/aarch64-linux-android-objcopy
 
