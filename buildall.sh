@@ -25,7 +25,7 @@ do
 	name="Cruel-$V"     \
 	toolchain=$t        \
 	O=build             \
-	+magisk             \
+	+magisk=v24.3       \
 	+nohardening        \
 	+force_dex_wqhd     \
 	+ttl                \
@@ -52,7 +52,7 @@ done
 	name="Cruel-$V"     \
 	toolchain=cruel     \
 	O=build             \
-	+magisk             \
+	+magisk=v24.3       \
 	+nohardening        \
 	+force_dex_wqhd     \
 	+ttl                \
