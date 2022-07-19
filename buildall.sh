@@ -18,7 +18,7 @@ git clean -d -x -f
 make mrproper
 
 mkdir -p ../out
-for t in default cruel proton
+for t in default cruel
 do
 ./cruelbuild pack           \
 	model=all           \
